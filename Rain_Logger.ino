@@ -12,9 +12,11 @@
  ** MISO - pin 12 on Arduino Uno/Duemilanove/Diecimila, 50 on mega
  ** CLK - pin 13 on Arduino Uno/Duemilanove/Diecimila,  52 on mega
  ** CS - depends on your SD card shield or module.*/
-const int chipSelect = 4;
+const int chipSelect = 53;
 
 //define external input pins used here
+const int status_led = 15;
+
 const int input_0 = 2;     // the number of the input pins
 const int input_1 = 3;
 
@@ -44,6 +46,10 @@ RTC_DS1307 rtc;
 
 void setup () {
 
+  // init output pins
+  pinMode(status_led, OUTPUT);
+  digitalWrite(status_led, LOW);
+  
   // initialize the input pins: 
   pinMode(input_0, INPUT_PULLUP);
   pinMode(input_1, INPUT_PULLUP);
@@ -73,7 +79,7 @@ void setup () {
      //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     // This line sets the RTC with an explicit date & time, for example to set
     // January 21, 2014 at 3am you would call:
-    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+     //rtc.adjust(DateTime(2018, 4, 8, 18, 24, 0));
   }
 
 /// intialize counts to 0 ////
@@ -96,12 +102,14 @@ void loop () {
               EVENT_ACTIVE = true;  //set event to active
               filename = build_filename(now); //set filename to use for this event
               log_to_SD(filename, build_header());  //log data header to file
+              digitalWrite(status_led, HIGH);
     }
     
     //see if EVENT_END_TIMER minutes have passed since last activity      
     else if (now.hour()*60 + now.minute() > last_change_time + EVENT_END_TIMER) {  
           //if so then disable EVENT_ACTIVE flag and close out log file
           EVENT_ACTIVE = false;  //no longer in an event so set flag to false
+          digitalWrite(status_led, LOW);
     }
 
     
@@ -246,7 +254,7 @@ String build_header(){
 
       for(int i=0; i<INPUT_COUNT; i++){
         header += delimeter;
-        header += "Sensor ";
+        header += "Sensor_";
         header += i+1;
       }
 

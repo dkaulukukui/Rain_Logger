@@ -12,7 +12,7 @@
  ** MISO - pin 12 on Arduino Uno/Duemilanove/Diecimila, 50 on mega
  ** CLK - pin 13 on Arduino Uno/Duemilanove/Diecimila,  52 on mega
  ** CS - depends on your SD card shield or module.*/
-const int chipSelect = 53;
+const int chipSelect = 53;  //changed to default mega CS
 
 //define external input pins used here
 const int status_led = 15;
